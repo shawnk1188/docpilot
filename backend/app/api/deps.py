@@ -1,0 +1,21 @@
+# backend/app/api/deps.py
+
+from fastapi import Request
+from app.services.vector_store import VectorStoreService
+from app.services.embedder import EmbeddingService
+from app.services.ingestion import IngestionService
+
+
+def get_vector_store(request: Request) -> VectorStoreService:
+    return VectorStoreService(request.app.state.qdrant)
+
+
+def get_embedder(request: Request) -> EmbeddingService:
+    return request.app.state.embedder
+
+
+def get_ingestion_service(request: Request) -> IngestionService:
+    return IngestionService(
+        vector_store=get_vector_store(request),
+        embedder=get_embedder(request),
+    )
