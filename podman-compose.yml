@@ -48,3 +48,27 @@ services:
         - qdrant
         - ollama
       restart: unless-stopped
+    prometheus:
+      image: docker.io/prom/prometheus:latest
+      container_name: prometheus
+      ports:
+        - "9090:9090"
+      volumes:
+        - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      networks:
+        - docpilot-net
+      restart: unless-stopped
+
+    grafana:
+      image: docker.io/grafana/grafana:latest
+      container_name: grafana
+      ports:
+        - "3000:3000"
+      environment:
+        - GF_SECURITY_ADMIN_PASSWORD=docpilot
+        - GF_USERS_ALLOW_SIGN_UP=false
+      volumes:
+        - ./infra/grafana/provisioning:/etc/grafana/provisioning
+      networks:
+        - docpilot-net
+      restart: unless-stopped

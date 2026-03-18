@@ -9,6 +9,7 @@ from app.api.routes import router
 from app.core.config import settings
 from app.services.embedder import EmbeddingService, _load_model
 from app.services.vector_store import VectorStoreService
+from prometheus_fastapi_instrumentator import Instrumentator
 
 
 @asynccontextmanager
@@ -47,6 +48,7 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+Instrumentator().instrument(app).expose(app)
 
 app.add_middleware(
     CORSMiddleware,

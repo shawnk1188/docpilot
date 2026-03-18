@@ -1,5 +1,3 @@
-# backend/app/services/ingestion.py
-
 from __future__ import annotations
 import os
 from pathlib import Path
@@ -11,6 +9,14 @@ from llama_index.core.node_parser import SentenceSplitter
 from app.core.config import settings
 from app.services.embedder import EmbeddingService
 from app.services.vector_store import VectorStoreService
+
+import time
+from app.core.logging import logger
+from app.core.metrics import (
+    DOCS_INGESTED, CHUNKS_STORED,
+    INGESTION_LATENCY, TOTAL_CHUNKS_IN_STORE
+)
+
 
 
 class IngestionService:
@@ -33,43 +39,49 @@ class IngestionService:
         self._embedder = embedder
 
     async def ingest_file(self, file_path: str) -> Tuple[int, str]:
-        """
-        Full pipeline for one file. Returns (chunks_stored, filename).
-
-        Pipeline:
-          1. LOAD   → parse file into raw text + metadata
-          2. CHUNK  → split into overlapping pieces
-          3. EMBED  → convert each chunk to a vector (batched)
-          4. STORE  → upsert into Qdrant with metadata
-        """
         source_filename = Path(file_path).name
+        start = time.perf_counter()
 
-        # Step 1 — Load
-        # SimpleDirectoryReader handles PDF, DOCX, TXT, MD out of the box.
-        # It also extracts page numbers from PDFs automatically.
-        docs = SimpleDirectoryReader(input_files=[file_path]).load_data()
-        if not docs:
-            raise ValueError(f"No text extracted from {source_filename}")
+        logger.info("ingestion_started", file=source_filename)
 
-        # Step 2 — Chunk
-        chunks, page_numbers = self._chunk(docs)
-        if not chunks:
-            raise ValueError(f"No chunks produced from {source_filename}")
+        try:
+            docs = self._load_documents(file_path)
+            if not docs:
+                raise ValueError(f"No text extracted from {source_filename}")
 
-        # Step 3 — Embed (all chunks in one batched call)
-        embeddings = self._embedder.embed_texts(chunks)
+            chunks, page_numbers = self._chunk(docs)
+            embeddings = self._embedder.embed_texts(chunks)
 
-        # Step 4 — Store (delete existing first to avoid duplicates on re-ingest)
-        await self._store.delete_by_source(source_filename)
-        await self._store.ensure_collection()
-        stored = await self._store.upsert_chunks(
-            chunks=chunks,
-            embeddings=embeddings,
-            source_file=source_filename,
-            page_numbers=page_numbers,
-        )
+            await self._store.delete_by_source(source_filename)
+            await self._store.ensure_collection()
+            stored = await self._store.upsert_chunks(
+                chunks=chunks,
+                embeddings=embeddings,
+                source_file=source_filename,
+                page_numbers=page_numbers,
+            )
 
-        return stored, source_filename
+            latency = time.perf_counter() - start
+
+            # Record metrics
+            DOCS_INGESTED.labels(status="success").inc()
+            CHUNKS_STORED.observe(stored)
+            INGESTION_LATENCY.observe(latency)
+            TOTAL_CHUNKS_IN_STORE.set(await self._store.count())
+
+            logger.info(
+                "ingestion_complete",
+                file=source_filename,
+                chunks=stored,
+                latency_ms=round(latency * 1000),
+            )
+
+            return stored, source_filename
+
+        except Exception as e:
+            DOCS_INGESTED.labels(status="failure").inc()
+            logger.error("ingestion_failed", file=source_filename, error=str(e))
+            raise
 
     def _chunk(self, docs) -> Tuple[List[str], List[Optional[int]]]:
         """
