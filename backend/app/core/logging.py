@@ -1,4 +1,3 @@
-# backend/app/core/logging.py
 import structlog
 import logging
 

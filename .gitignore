@@ -1,18 +1,20 @@
 ```
-
-Now fill in the three files that matter for this commit — `.gitignore`, `README.md`, and `Makefile`. These are what a recruiter sees first when they land on the repo.
-
-**`.gitignore`:**
-```
+# Python
 __pycache__/
 *.pyc
+*.pyo
 .venv/
-venv/
-.env
 *.egg-info/
-.pytest_cache/
-.mypy_cache/
 dist/
 build/
+.pytest_cache/
+.mypy_cache/
+
+# uv — commit uv.lock but ignore cache
+.uv/
+.cache/
+
+# env
+.env
 docs/sample/*.pdf
 notebooks/.ipynb_checkpoints/

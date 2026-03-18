@@ -1,5 +1,3 @@
-# backend/app/services/vector_store.py
-
 from __future__ import annotations
 import uuid
 from typing import List, Tuple, Optional

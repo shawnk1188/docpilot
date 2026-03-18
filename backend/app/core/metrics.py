@@ -1,4 +1,3 @@
-# backend/app/core/metrics.py
 from prometheus_client import Counter, Histogram, Gauge
 
 # ── Ingestion metrics ─────────────────────────────────────────────────────────

@@ -1,5 +1,3 @@
-# backend/app/main.py
-
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -72,5 +70,6 @@ async def health():
         "status": "ok" if qdrant_ok else "degraded",
         "qdrant": qdrant_ok,
         "embedding_model": settings.embedding_model,
-        "llm": settings.ollama_model,
+        "llm_provider": settings.llm_provider,
+        "llm_model": settings.llm_model,
     }

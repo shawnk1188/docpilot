@@ -1,16 +1,19 @@
-# backend/app/api/routes.py
-
 import os
 import shutil
 import tempfile
 from pathlib import Path
-
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 
 from app.core.config import settings
-from app.models.schemas import IngestResponse, StatsResponse
-from app.api.deps import get_ingestion_service, get_vector_store
+from app.models.schemas import (
+    IngestResponse, QueryRequest, QueryResponse, StatsResponse
+)
+from app.api.deps import (
+    get_ingestion_service, get_retrieval_service, get_vector_store
+)
 from app.services.ingestion import IngestionService
+from app.services.retrieval import RetrievalService
 from app.services.vector_store import VectorStoreService
 
 router = APIRouter(prefix="/api", tags=["docpilot"])
@@ -35,8 +38,14 @@ async def ingest(
             detail=f"Unsupported type '{ext}'. Allowed: {ALLOWED}",
         )
 
-    # Write upload to a temp file — LlamaIndex needs a real file path
-    with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
+    # FIX from step 1b: preserve original filename in the temp file
+    # so citations show the real name, not tmpmcvlww22.pdf
+    original_name = Path(file.filename).stem   # e.g. "my_manual"
+    with tempfile.NamedTemporaryFile(
+        delete=False,
+        prefix=f"{original_name}_",
+        suffix=ext,
+    ) as tmp:
         shutil.copyfileobj(file.file, tmp)
         tmp_path = tmp.name
 
@@ -56,9 +65,36 @@ async def ingest(
     )
 
 
+@router.post("/query", response_model=QueryResponse)
+async def query(
+    body: QueryRequest,
+    svc: RetrievalService = Depends(get_retrieval_service),
+):
+    """
+    Ask a question. Returns the answer with source citations.
+
+    LEARNING — the response always includes sources[].
+    Each source has: text (the chunk), source_file, page_number, score.
+    The score is cosine similarity — higher means more relevant.
+    Show these to users so they can verify the answer themselves.
+    """
+    try:
+        return await svc.query(
+            question=body.question,
+            top_k=body.top_k,
+        )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail="Ollama is not reachable. Is the container running?",
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
 @router.get("/stats", response_model=StatsResponse)
 async def stats(store: VectorStoreService = Depends(get_vector_store)):
-    """How many chunks are stored and what settings were used."""
+    """Collection stats — chunks stored and current settings."""
     return StatsResponse(
         collection=settings.qdrant_collection,
         total_chunks=await store.count(),

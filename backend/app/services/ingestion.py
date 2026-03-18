@@ -9,15 +9,12 @@ from llama_index.core.node_parser import SentenceSplitter
 from app.core.config import settings
 from app.services.embedder import EmbeddingService
 from app.services.vector_store import VectorStoreService
-
 import time
 from app.core.logging import logger
 from app.core.metrics import (
     DOCS_INGESTED, CHUNKS_STORED,
     INGESTION_LATENCY, TOTAL_CHUNKS_IN_STORE
 )
-
-
 
 class IngestionService:
     """
@@ -39,19 +36,34 @@ class IngestionService:
         self._embedder = embedder
 
     async def ingest_file(self, file_path: str) -> Tuple[int, str]:
+        """
+        Full pipeline for one file. Returns (chunks_stored, filename).
+
+        Pipeline:
+          1. LOAD   → parse file into raw text + metadata
+          2. CHUNK  → split into overlapping pieces
+          3. EMBED  → convert each chunk to a vector (batched)
+          4. STORE  → upsert into Qdrant with metadata
+        """
         source_filename = Path(file_path).name
         start = time.perf_counter()
-
         logger.info("ingestion_started", file=source_filename)
 
         try:
-            docs = self._load_documents(file_path)
+                   # Step 1 — Load
+        # SimpleDirectoryReader handles PDF, DOCX, TXT, MD out of the box.
+        # It also extracts page numbers from PDFs automatically.
+            docs = SimpleDirectoryReader(input_files=[file_path]).load_data()
+
             if not docs:
                 raise ValueError(f"No text extracted from {source_filename}")
 
+            # Step 2 — Chunk
             chunks, page_numbers = self._chunk(docs)
+            # Step 3 — Embed (all chunks in one batched call)
             embeddings = self._embedder.embed_texts(chunks)
 
+            # Step 4 — Store (delete existing first to avoid duplicates on re-ingest)
             await self._store.delete_by_source(source_filename)
             await self._store.ensure_collection()
             stored = await self._store.upsert_chunks(

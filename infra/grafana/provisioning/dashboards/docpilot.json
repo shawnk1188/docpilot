@@ -1,0 +1,135 @@
+{
+  "__inputs": [],
+  "__requires": [],
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" },
+          "thresholds": { "steps": [
+            { "color": "red", "value": 0 },
+            { "color": "yellow", "value": 50 },
+            { "color": "green", "value": 100 }
+          ]}
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+      "title": "Total chunks stored",
+      "type": "stat",
+      "targets": [{ "expr": "docpilot_total_chunks", "legendFormat": "chunks" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" },
+          "thresholds": { "steps": [
+            { "color": "green", "value": 0 },
+            { "color": "yellow", "value": 10 },
+            { "color": "red", "value": 50 }
+          ]}
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "id": 2,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" },
+      "title": "Low confidence queries",
+      "type": "stat",
+      "targets": [{ "expr": "docpilot_low_confidence_queries_total", "legendFormat": "low confidence" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" },
+          "unit": "s",
+          "thresholds": { "steps": [
+            { "color": "green", "value": 0 },
+            { "color": "yellow", "value": 5 },
+            { "color": "red", "value": 15 }
+          ]}
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "id": 3,
+      "options": { "reduceOptions": { "calcs": ["mean"] }, "colorMode": "background" },
+      "title": "Avg query latency",
+      "type": "stat",
+      "targets": [{ "expr": "rate(docpilot_query_latency_seconds_sum[5m]) / rate(docpilot_query_latency_seconds_count[5m])", "legendFormat": "avg latency" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" },
+          "thresholds": { "steps": [
+            { "color": "red", "value": 0 },
+            { "color": "yellow", "value": 0.5 },
+            { "color": "green", "value": 0.7 }
+          ]}
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+      "id": 4,
+      "options": { "reduceOptions": { "calcs": ["mean"] }, "colorMode": "background" },
+      "title": "Avg retrieval score",
+      "type": "stat",
+      "targets": [{ "expr": "rate(docpilot_retrieval_score_sum[5m]) / rate(docpilot_retrieval_score_count[5m])", "legendFormat": "avg score" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "id": 5,
+      "title": "Query latency over time",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "rate(docpilot_query_latency_seconds_sum[5m]) / rate(docpilot_query_latency_seconds_count[5m])", "legendFormat": "avg latency" },
+        { "expr": "histogram_quantile(0.95, rate(docpilot_query_latency_seconds_bucket[5m]))", "legendFormat": "p95 latency" }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": {} },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "id": 6,
+      "title": "Retrieval score distribution",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "rate(docpilot_retrieval_score_sum[5m]) / rate(docpilot_retrieval_score_count[5m])", "legendFormat": "mean score" },
+        { "expr": "histogram_quantile(0.10, rate(docpilot_retrieval_score_bucket[5m]))", "legendFormat": "p10 score (worst)" }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": {} },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "id": 7,
+      "title": "Documents ingested",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "rate(docpilot_documents_ingested_total{status='success'}[5m])", "legendFormat": "success" },
+        { "expr": "rate(docpilot_documents_ingested_total{status='failure'}[5m])", "legendFormat": "failure" }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": {} },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "id": 8,
+      "title": "HTTP request rate",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "rate(http_requests_total{app='docpilot'}[5m])", "legendFormat": "{{method}} {{handler}}" }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "tags": ["docpilot", "rag"],
+  "title": "docpilot RAG dashboard",
+  "uid": "docpilot-rag-v1",
+  "version": 1
+}

@@ -1,0 +1,13 @@
+[project]
+name = "docpilot-frontend"
+version = "0.1.0"
+description = "Production RAG frontend — docpilot"
+requires-python = ">=3.12"
+dependencies = [
+    "streamlit==1.41.0",
+    "httpx==0.28.0",
+    "python-dotenv==1.0.1",
+]
+
+[tool.uv]
+dev-dependencies = []
