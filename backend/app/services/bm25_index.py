@@ -124,7 +124,7 @@ class BM25Index:
 
         LEARNING — tokenisation options from simple to complex:
           1. split()                    → splits on whitespace only
-          2. re.split(r'\W+', lower)    → splits on non-word chars (we use this)
+          2. re.split                   → splits on non-word chars (we use this)
           3. nltk word_tokenize         → handles contractions, punctuation
           4. spacy                      → full NLP pipeline, overkill for RAG
 
