@@ -1,0 +1,463 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "total_pairs": 50,
+    "source_docs": [
+      "thinkstats2.pdf"
+    ],
+    "generated_by": "llama-3.1-8b-instant",
+    "reviewed": false
+  },
+  "pairs": [
+    {
+      "id": 1,
+      "question": "What is the CDF?",
+      "ground_truth": "The cumulative distribution function (CDF) that maps from a value to its percentile rank.",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 48,
+      "source_text": "48 Chapter 4. Cumulative distribution functions\n4.3 CDFs\nNow that we understand percentiles and percentile ranks, we are ready to\ntackle the cumulative distribution function(CDF). The CDF is the func-\ntion that maps from a value to its percentile rank.\nThe CDF is a function of x, where x is any value that might appear in the\ndistribution. To evaluate CDF( x) for a particular value of x, we compute\nthe fraction of values in the distribution less than or equal to x.\nHere\u2019s what that looks like as "
+    },
+    {
+      "id": 2,
+      "question": "What is the sample mean of the given data set?",
+      "ground_truth": "-35.12",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 106,
+      "source_text": "106 Chapter 8. Estimation\n[-0.441, 1.774, -0.101, -1.138, 2.975, -213.8]\nNow what\u2019s your estimate of \u00b5? If you use the sample mean, your guess is\n-35.12. Is that the best choice? What are the alternatives?\nOne option is to identify and discard outliers, then compute the sample mean\nof the rest. Another option is to use the median as an estimator.\nWhich estimator is best depends on the circumstances (for example, whether\nthere are outliers) and on what the goal is. Are you trying to minimize erro"
+    },
+    {
+      "id": 3,
+      "question": "What is the index number?",
+      "ground_truth": "237",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 237,
+      "source_text": "Index 237\ndensity, 75, 78\ndependent variable, 153\u2013155, 158,\n163, 164, 166, 167, 170, 179\nderivative, 75\ndescriptive statistics, 2\ndeviation, 26, 97, 98, 126, 127, 137,\n147, 231\ndiagnosis, 199\ndice, 107, 126\ndictionary, 17, 81\nDictWrapper, 81, 82\ndigitize, 95\ndiscrete distribution, 79\ndiscretize, 80, 89\ndistribution, v, 17, 29\nanalytic, 57, 73\nchi-squared, 231\nempirical, 57, 72, 73\nexponential, 57, 62, 69, 72, 75, 80,\n113, 115, 222\nGaussian, 60, 62, 67, 71, 75, 80,\n97, 101, 105, 107, 217, 221,\n22"
+    },
+    {
+      "id": 4,
+      "question": "What is the name of the function that computes the absolute value of Pearson\u2019s correlation?",
+      "ground_truth": "thinkstats2.Corr",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 125,
+      "source_text": "9.6. Testing proportions 125\nclass CorrelationPermute(thinkstats2.HypothesisTest):\ndef TestStatistic(self, data):\nxs, ys = data\ntest_stat = abs(thinkstats2.Corr(xs, ys))\nreturn test_stat\ndef RunModel(self):\nxs, ys = self.data\nxs = np.random.permutation(xs)\nreturn xs, ys\ndata is a pair of sequences. TestStatistic computes the absolute value of\nPearson\u2019s correlation. RunModel shu\ufb04es the xs and returns simulated data.\nHere\u2019s the code that reads the data and runs the test:\nlive, firsts, others = fir"
+    },
+    {
+      "id": 5,
+      "question": "What is another name for serial correlation?",
+      "ground_truth": "Autocorrelation",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 185,
+      "source_text": "12.7. Autocorrelation 185\nIn the next section we\u2019ll test whether these correlations are statistically sig-\nni\ufb01cant (they are not), but at this point we can tentatively conclude that\nthere are no substantial seasonal patterns in these series, at least not with\nthese lags.\n12.7 Autocorrelation\nIf you think a series might have some serial correlation, but you don\u2019t know\nwhich lags to test, you can test them all! The autocorrelation function\nis a function that maps from lag to the serial correlation"
+    },
+    {
+      "id": 6,
+      "question": "What percentage of con\ufb01dence interval is mentioned in the text?",
+      "ground_truth": "90%",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 234,
+      "source_text": "234 Chapter 14. Analytic methods\nWe can also use this distribution to \ufb01nd the standard error of the estimate\nand con\ufb01dence intervals, but that would only be approximately correct. To\nbe more precise, we should compute the sampling distribution of \u03b4 under the\nalternate hypothesis that the samples are drawn from di\ufb00erent populations.\nCompute this distribution and use it to calculate the standard error and a\n90% con\ufb01dence interval for the di\ufb00erence in means.\nExercise 14.3 In a recent paper 2, Stein"
+    },
+    {
+      "id": 7,
+      "question": "What is the name of the function that computes the median of a Pmf?",
+      "ground_truth": "func",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 214,
+      "source_text": "214 Chapter 13. Survival analysis\nsf1 is the survival curve for pregnancy length; in this case we can use the\ndefault values for RemainingLifetime.\nsf2 is the survival curve for age at \ufb01rst marriage; func is a function that\ntakes a Pmf and computes its median (50th percentile).\n13.11 Exercises\nMy solution to this exercise is in chap13soln.py.\nExercise 13.1 In NSFG Cycles 6 and 7, the variable cmdivorcx contains\nthe date of divorce for the respondent\u2019s \ufb01rst marriage, if applicable, encoded\nin cen"
+    },
+    {
+      "id": 8,
+      "question": "What is the default number of iterations for the ResampleSurvival function?",
+      "ground_truth": "101",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 205,
+      "source_text": "13.7. Con\ufb01dence intervals 205\nwhen they were born, whether they\u2019ve been married, and when. And they\ncan be expected to report this information accurately.\nWe can quantify sampling error by resampling. Here\u2019s the code:\ndef ResampleSurvival(resp, iters=101):\nlow, high = resp.agemarry.min(), resp.agemarry.max()\nts = np.arange(low, high, 1/12.0)\nss_seq = []\nfor i in range(iters):\nsample = thinkstats2.ResampleRowsWeighted(resp)\nhf, sf = EstimateSurvival(sample)\nss_seq.append(sf.Probs(ts))\nlow, high ="
+    },
+    {
+      "id": 9,
+      "question": "What is the value of CDF(x) if x is greater than the largest value?",
+      "ground_truth": "1",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 49,
+      "source_text": "4.4. Representing CDFs 49\n0 1 2 3 4 5 6\nx\n0.0\n0.2\n0.4\n0.6\n0.8\n1.0CDF\nFigure 4.2: Example of a CDF.\nIf x is greater than the largest value, CDF( x) is 1.\nFigure 4.2 is a graphical representation of this CDF. The CDF of a sample\nis a step function.\n4.4 Representing CDFs\nthinkstats2 provides a class named Cdf that represents CDFs. The funda-\nmental methods Cdf provides are:\n\u2022Prob(x): Given a value x, computes the probability p= CDF(x). The\nbracket operator is equivalent to Prob.\n\u2022Value(p): Given a "
+    },
+    {
+      "id": 10,
+      "question": "What is the formula for the mean of the products of X and Y?",
+      "ground_truth": "\u03c1= 1/n \u2211 pi",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 99,
+      "source_text": "7.5. Pearson\u2019s correlation 99\nWhere SX and SY are the standard deviations of X and Y. The mean of\nthese products is\n\u03c1= 1\nn\n\u2211\npi\nOr we can rewrite \u03c1 by factoring out SX and SY:\n\u03c1= Cov(X,Y )\nSXSY\nThis value is calledPearson\u2019s correlation after Karl Pearson, an in\ufb02uential\nearly statistician. It is easy to compute and easy to interpret. Because\nstandard scores are dimensionless, so is \u03c1.\nHere is the implementation in thinkstats2:\ndef Corr(xs, ys):\nxs = np.asarray(xs)\nys = np.asarray(ys)\nmeanx, varx "
+    },
+    {
+      "id": 11,
+      "question": "What is the 50th percentile often used as?",
+      "ground_truth": "a measure of central tendency",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 56,
+      "source_text": "56 Chapter 4. Cumulative distribution functions\n\u2022median: The 50th percentile, often used as a measure of central ten-\ndency.\n\u2022interquartile range: The di\ufb00erence between the 75th and 25th per-\ncentiles, used as a measure of spread.\n\u2022quantile: A sequence of values that correspond to equally spaced per-\ncentile ranks; for example, the quartiles of a distribution are the 25th,\n50th and 75th percentiles.\n\u2022replacement: A property of a sampling process. \u201cWith replacement\u201d\nmeans that the same value can "
+    },
+    {
+      "id": 12,
+      "question": "What is the name of the attribute in the Logit object that represents the model?",
+      "ground_truth": "endog",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 167,
+      "source_text": "11.8. Implementation 167\ndf['boy'] = (df.babysex==1).astype(int)\nFactors that have been found to a\ufb00ect sex ratio include parents\u2019 age, birth\norder, race, and social status. We can use logistic regression to see if these\ne\ufb00ects appear in the NSFG data. I\u2019ll start with the mother\u2019s age:\nimport statsmodels.formula.api as smf\nmodel = smf.logit('boy ~ agepreg', data=df)\nresults = model.fit()\nSummarizeResults(results)\nlogit takes the same arguments as ols, a formula in Patsy syntax and a\nDataFrame. Th"
+    },
+    {
+      "id": 13,
+      "question": "What is the date represented by the Timestamp object 'month0'?",
+      "ground_truth": "1899-12-15",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 207,
+      "source_text": "13.8. Cohort e\ufb00ects 207\nresps = [resp5, resp6, resp7]\nFor each DataFrame,resp, I use cmbirth to compute the decade of birth for\neach respondent:\nmonth0 = pandas.to_datetime('1899-12-15')\ndates = [month0 + pandas.DateOffset(months=cm)\nfor cm in resp.cmbirth]\nresp['decade'] = (pandas.DatetimeIndex(dates).year - 1900) // 10\ncmbirth is encoded as the integer number of months since December 1899;\nmonth0 represents that date as a Timestamp object. For each birth date,\nwe instantiate a DateOffset that "
+    },
+    {
+      "id": 14,
+      "question": "What is the estimated hazard function shown in Figure 13.2?",
+      "ground_truth": "low in the teens, higher in the 20s, and declining in the 30s",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 203,
+      "source_text": "13.6. Estimating the survival curve 203\nhf = EstimateHazardFunction(complete, ongoing)\nFigure 13.2 (top) shows the estimated hazard function; it is low in the teens,\nhigher in the 20s, and declining in the 30s. It increases again in the 40s, but\nthat is an artifact of the estimation process; as the number of respondents\n\u201cat risk\u201d decreases, a small number of women getting married yields a large\nestimated hazard. The survival curve will smooth out this noise.\n13.6 Estimating the survival curve\nOn"
+    },
+    {
+      "id": 15,
+      "question": "How many rows are in the DataFrame?",
+      "ground_truth": "13593",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 6,
+      "source_text": "6 Chapter 1. Exploratory data analysis\nIn addition to the data, a DataFrame also contains the variable names and\ntheir types, and it provides methods for accessing and modifying the data.\nIf you print df you get a truncated view of the rows and columns,\nand the shape of the DataFrame, which is 13593 rows/records and 244\ncolumns/variables.\n>>> import nsfg\n>>> df = nsfg.ReadFemPreg()\n>>> df\n...\n[13593 rows x 244 columns]\nThe DataFrame is too big to display, so the output is truncated. The last\nlin"
+    },
+    {
+      "id": 16,
+      "question": "What does the argument ddof=1 in np.var stand for?",
+      "ground_truth": "delta degrees of freedom",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 109,
+      "source_text": "8.3. Sampling distributions 109\nprint('mean error biased', MeanError(estimates1, sigma**2))\nprint('mean error unbiased', MeanError(estimates2, sigma**2))\nAgain, n is the sample size and m is the number of times we play the game.\nnp.varcomputes S2 by default andS2\nn\u22121 if you provide the argumentddof=1,\nwhich stands for \u201cdelta degrees of freedom.\u201d I won\u2019t explain that term,\nbut you can read about it at http://en.wikipedia.org/wiki/Degrees_\nof_freedom_(statistics).\nMeanError computes the mean di\ufb00er"
+    },
+    {
+      "id": 17,
+      "question": "What is the value of t that corresponds to r=0.07?",
+      "ground_truth": "2.9e-11",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 230,
+      "source_text": "230 Chapter 14. Analytic methods\n0.04\n 0.03\n 0.02\n 0.01\n 0.00 0.01 0.02 0.03 0.04\ncorrelation\n0.0\n0.2\n0.4\n0.6\n0.8\n1.0CDF\nStudent t\nsample\nFigure 14.3: Sampling distribution of correlations for uncorrelated normal\nvariables.\nto occur if the variables are actually uncorrelated. Using the analytic distri-\nbution, we can compute just how unlikely:\nt = r * math.sqrt((n-2) / (1-r**2))\np_value = 1 - scipy.stats.t.cdf(t, df=n-2)\nWe compute the value of t that corresponds to r=0.07, and then evaluate\nthe"
+    },
+    {
+      "id": 18,
+      "question": "What is the formula to convert odds in favor to probability?",
+      "ground_truth": "p = o / (o+1)",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 165,
+      "source_text": "11.7. Estimating parameters 165\no = p / (1-p)\nGiven odds in favor, you can convert to probability like this:\np = o / (o+1)\nLogistic regression is based on the following model:\nlog o= \u03b20 + \u03b21x1 + \u03b22x2 + \u03b5\nWhere ois the odds in favor of a particular outcome; in the example, owould\nbe the odds of having a boy.\nSuppose we have estimated the parameters \u03b20, \u03b21, and \u03b22 (I\u2019ll explain how in\na minute). And suppose we are given values for x1 and x2. We can compute\nthe predicted value of log o, and then co"
+    },
+    {
+      "id": 19,
+      "question": "What is the difference between the 75th and 25th percentiles?",
+      "ground_truth": "The IQR",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 52,
+      "source_text": "52 Chapter 4. Cumulative distribution functions\nhalf, also known as the median. Like the mean, the median is a measure of\nthe central tendency of a distribution.\nActually, there are several de\ufb01nitions of \u201cmedian,\u201d each with di\ufb00erent prop-\nerties. But Percentile(50) is simple and e\ufb03cient to compute.\nAnother percentile-based statistic is the interquartile range (IQR), which\nis a measure of the spread of a distribution. The IQR is the di\ufb00erence between\nthe 75th and 25th percentiles.\nMore generally,"
+    },
+    {
+      "id": 20,
+      "question": "What is the function called in timeseries.py that simulates autocorrelation?",
+      "ground_truth": "SimulateAutocorrelation",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 186,
+      "source_text": "186 Chapter 12. Time series analysis\n0 5 10 15 20 25 30 35 40\nlag (day)\n0.20\n0.15\n0.10\n0.05\n0.00\n0.05\n0.10\n0.15\n0.20\ncorrelation\nhigh\nmedium\nlow\n0 5 10 15 20 25 30 35 40\nlag (days)\n0.20\n0.15\n0.10\n0.05\n0.00\n0.05\n0.10\n0.15\n0.20\nhigh\nmedium\nlow\nFigure 12.5: Autocorrelation function for daily prices (left), and daily prices\nwith a simulated weekly seasonality (right).\nI computed the gray regions by resampling the residuals. You can see my\ncode in timeseries.py; the function is called SimulateAutocor"
+    },
+    {
+      "id": 21,
+      "question": "What is the probability associated with the value 2 in the Pmf object?",
+      "ground_truth": "0",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 32,
+      "source_text": "32 Chapter 3. Probability mass functions\n>>> import thinkstats2\n>>> pmf = thinkstats2.Pmf([1, 2, 2, 3, 5])\n>>> pmf\nPmf({1: 0.2, 2: 0.4, 3: 0.2, 5: 0.2})\nThe Pmf is normalized so total probability is 1.\nPmf and Hist objects are similar in many ways; in fact, they inherit many\nof their methods from a common parent class. For example, the methods\nValues and Items work the same way for both. The biggest di\ufb00erence is\nthat a Hist maps from values to integer counters; a Pmf maps from values\nto \ufb02oating-"
+    },
+    {
+      "id": 22,
+      "question": "What is the name of the distribution being described in Chapter 2?",
+      "ground_truth": "normal distribution",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 22,
+      "source_text": "22 Chapter 2. Distributions\nof the normal distribution, also called a Gaussian distribution. But unlike\na true normal distribution, this distribution is asymmetric; it has a tail that\nextends farther to the left than to the right.\nFigure 2.2 shows the histogram of birthwgt_oz, which is the ounces part of\nbirth weight. In theory we expect this distribution to be uniform; that is, all\nvalues should have the same frequency. In fact, 0 is more common than the\nother values, and 1 and 15 are less comm"
+    },
+    {
+      "id": 23,
+      "question": "Where is the code for Chapter 4 located?",
+      "ground_truth": "cumulative.py",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 45,
+      "source_text": "Chapter 4\nCumulative distribution\nfunctions\nThe code for this chapter is in cumulative.py. For information about down-\nloading and working with this code, see Section 0.2.\n4.1 The limits of PMFs\nPMFs work well if the number of values is small. But as the number of\nvalues increases, the probability associated with each value gets smaller and\nthe e\ufb00ect of random noise increases.\nFor example, we might be interested in the distribution of birth weights. In\nthe NSFG data, the variable totalwgt_lb rec"
+    },
+    {
+      "id": 24,
+      "question": "What is the unit of price shown in the figure?",
+      "ground_truth": "$ per gram",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 177,
+      "source_text": "12.2. Plotting 177\n0\n5\n10\n15\n20 price per gram ($)\nhigh\n0\n5\n10\n15\n20\nmedium\nNov 2010May 2011Nov 2011May 2012Nov 2012May 2013Nov 2013May 2014\n0\n5\n10\n15\n20\nlow\nFigure 12.1: Time series of daily price per gram for high, medium, and low\nquality cannabis."
+    },
+    {
+      "id": 25,
+      "question": "Since when has the U.S. Centers for Disease Control and Prevention conducted the National Survey of Family Growth?",
+      "ground_truth": "1973",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 3,
+      "source_text": "1.2. The National Survey of Family Growth 3\n\u2022Estimation: We will use data from a sample to estimate characteristics\nof the general population.\n\u2022Hypothesis testing: Where we see apparent e\ufb00ects, like a di\ufb00erence\nbetween two groups, we will evaluate whether the e\ufb00ect might have\nhappened by chance.\nBy performing these steps with care to avoid pitfalls, we can reach conclusions\nthat are more justi\ufb01able and more likely to be correct.\n1.2 The National Survey of Family Growth\nSince 1973 the U.S. Center"
+    },
+    {
+      "id": 26,
+      "question": "How many groups are created by the 'groupby' method?",
+      "ground_truth": "3",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 175,
+      "source_text": "12.1. Importing and cleaning 175\ndef GroupByQualityAndDay(transactions):\ngroups = transactions.groupby('quality')\ndailies = {}\nfor name, group in groups:\ndailies[name] = GroupByDay(group)\nreturn dailies\ngroupby is a DataFrame method that returns a GroupBy object, groups;\nused in a for loop, it iterates the names of the groups and the DataFrames\nthat represent them. Since the values of quality are low, medium, and high,\nwe get three groups with those names.\nThe loop iterates through the groups an"
+    },
+    {
+      "id": 27,
+      "question": "What is the value of \u03b1 for the Pareto distribution in the Pareto world?",
+      "ground_truth": "1.7",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 72,
+      "source_text": "72 Chapter 5. Modeling distributions\nExercise 5.2 To get a feel for the Pareto distribution, let\u2019s see how di\ufb00erent\nthe world would be if the distribution of human height were Pareto. With the\nparameters xm = 1 m and \u03b1 = 1.7, we get a distribution with a reasonable\nminimum, 1 m, and median, 1.5 m.\nPlot this distribution. What is the mean human height in Pareto world?\nWhat fraction of the population is shorter than the mean? If there are 7\nbillion people in Pareto world, how many do we expect to "
+    },
+    {
+      "id": 28,
+      "question": "What is the difference between the distributions of first babies and others in terms of weight?",
+      "ground_truth": "First babies are slightly lighter throughout the distribution, with a larger discrepancy above the mean.",
+      "question_type": "comparative",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 51,
+      "source_text": "4.6. Percentile-based statistics 51\n0 2 4 6 8 10 12\nweight (pounds)\n0.0\n0.2\n0.4\n0.6\n0.8\n1.0CDF\nBirth weight\nfirst\nother\nFigure 4.4: CDF of birth weights for \ufb01rst babies and others.\nthinkplot.PrePlot(2)\nthinkplot.Cdfs([first_cdf, other_cdf])\nthinkplot.Show(xlabel='weight (pounds)', ylabel='CDF')\nFigure 4.4 shows the result. Compared to Figure 4.1, this \ufb01gure makes the\nshape of the distributions, and the di\ufb00erences between them, much clearer.\nWe can see that \ufb01rst babies are slightly lighter throug"
+    },
+    {
+      "id": 29,
+      "question": "What is the maximum height in the scatter plot data?",
+      "ground_truth": "200",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 92,
+      "source_text": "92 Chapter 7. Relationships between variables\n140 150 160 170 180 190 200 210\nheight (cm)\n20\n40\n60\n80\n100\n120\n140\n160\n180\n200weight (kg)\n140 150 160 170 180 190 200 210\nheight (cm)\n20\n40\n60\n80\n100\n120\n140\n160\n180\n200weight (kg)\nFigure 7.1: Scatter plots of weight versus height for the respondents in the\nBRFSS, unjittered (left), jittered (right).\nSampleRows chooses a random subset of the data:\ndef SampleRows(df, nrows, replace=False):\nindices = np.random.choice(df.index, nrows, replace=replace)\n"
+    },
+    {
+      "id": 30,
+      "question": "What is the result of calling pmf.Total()?",
+      "ground_truth": "1.0",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 33,
+      "source_text": "3.2. Plotting PMFs 33\nTo renormalize, call Normalize:\n>>> pmf.Normalize()\n>>> pmf.Total()\n1.0\nPmf objects provide a Copy method so you can make and modify a copy\nwithout a\ufb00ecting the original.\nMy notation in this section might seem inconsistent, but there is a system: I\nuse Pmf for the name of the class, pmf for an instance of the class, and PMF\nfor the mathematical concept of a probability mass function.\n3.2 Plotting PMFs\nthinkplot provides two ways to plot Pmfs:\n\u2022To plot a Pmf as a bar graph, "
+    },
+    {
+      "id": 31,
+      "question": "What is the considered acceptable power of a test?",
+      "ground_truth": "80%",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 132,
+      "source_text": "132 Chapter 9. Hypothesis testing\nIn this example, the test had only a 30% chance of yielding a positive result\n(again, assuming that the di\ufb00erence is 0.078 weeks). As a rule of thumb, a\npower of 80% is considered acceptable, so we would say that this test was\n\u201cunderpowered.\u201d\nIn general a negative hypothesis test does not imply that there is no di\ufb00erence\nbetween the groups; instead it suggests that if there is a di\ufb00erence, it is too\nsmall to detect with this sample size.\n9.11 Replication\nThe hyp"
+    },
+    {
+      "id": 32,
+      "question": "What is the difference in means in standard deviations in the given example?",
+      "ground_truth": "0.029",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 28,
+      "source_text": "28 Chapter 2. Distributions\npooled_var = (n1 * var1 + n2 * var2) / (n1 + n2)\nd = diff / math.sqrt(pooled_var)\nreturn d\nIn this example, the di\ufb00erence in means is 0.029 standard deviations, which\nis small. To put that in perspective, the di\ufb00erence in height between men\nand women is about 1.7 standard deviations (see https://en.wikipedia.\norg/wiki/Effect_size).\n2.10 Reporting results\nWe have seen several ways to describe the di\ufb00erence in pregnancy length (if\nthere is one) between \ufb01rst babies and o"
+    },
+    {
+      "id": 33,
+      "question": "What is the method to generate predictions for a future time?",
+      "ground_truth": "inter + slope * dt",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 193,
+      "source_text": "12.11. Glossary 193\n2. Compute the EWMA of di\ufb00erences between successive elements in the\ntime series and use the last point as a slope, slope.\n3. To predict values at future times, compute inter + slope * dt,\nwhere dt is the di\ufb00erence between the time of the prediction and the\ntime of the last observation.\nUse this method to generate predictions for a year after the last observation.\nA few hints:\n\u2022Use timeseries.FillMissing to \ufb01ll in missing values before running\nthis analysis. That way the time"
+    },
+    {
+      "id": 34,
+      "question": "What is the section number of Replication?",
+      "ground_truth": "9.11",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": null,
+      "source_text": ". . . . . . . . 130\n9.11 Replication . . . . . . . . . . . . . . . . . . . . . . . . . . . . 132\n9.12 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 133\n9.13 Glossary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 134"
+    },
+    {
+      "id": 35,
+      "question": "How many random heights were used to create the KDE shown in Figure 6.1?",
+      "ground_truth": "500",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 79,
+      "source_text": "6.3. The distribution framework 79\nFigure 6.1 shows the normal density function and a KDE based on a sam-\nple of 500 random heights. The estimate is a good match for the original\ndistribution.\nEstimating a density function with KDE is useful for several purposes:\n\u2022Visualization: During the exploration phase of a project, CDFs are\nusually the best visualization of a distribution. After you look at a\nCDF, you can decide whether an estimated PDF is an appropriate\nmodel of the distribution. If so, i"
+    },
+    {
+      "id": 36,
+      "question": "In what chapter is the concept of hypothesis testing demonstrated?",
+      "ground_truth": "Chapter 9",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 128,
+      "source_text": "128 Chapter 9. Hypothesis testing\nThis example demonstrates an important point: the p-value depends on the\nchoice of test statistic and the model of the null hypothesis, and sometimes\nthese choices determine whether an e\ufb00ect is statistically signi\ufb01cant or not.\n9.8 First babies again\nEarlier in this chapter we looked at pregnancy lengths for \ufb01rst babies and\nothers, and concluded that the apparent di\ufb00erences in mean and standard\ndeviation are not statistically signi\ufb01cant. But in Section 3.3, we sa"
+    },
+    {
+      "id": 37,
+      "question": "What is the number associated with the 'gender gap'?",
+      "ground_truth": "234",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 238,
+      "source_text": "238 Index\nGaussian distribution, 30, 60, 62, 67,\n71, 75, 80, 97, 101, 105, 107,\n217, 221, 222\ngender gap, 234\ngenerative process, 71\nGit, viii\nGitHub, viii\ngoodness of \ufb01t, 144, 151\ngorilla, 110, 112, 217, 219, 220\nGroup, Blue Man, 71\ngroupby, 96, 175, 207, 209, 214\nhashable, 81\nhazard function, 198, 200, 202, 214\nHazardFunction, 199, 202, 209\nheight, 71, 72, 93\nhexbin plot, 94\nHist, 18\u201320, 22\u201324, 29, 31\u201334, 80\u201382,\n120, 127\nhistogram, 17, 18, 20, 22, 29\nhockey, 115\nhockey stick graph, 173\nHolm-Bo"
+    },
+    {
+      "id": 38,
+      "question": "What is the coe\ufb03cient of determination intended to quantify?",
+      "ground_truth": "goodness of \ufb01t",
+      "question_type": "conceptual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 151,
+      "source_text": "10.9. Glossary 151\n\u2022residual: The deviation of an actual value from a model.\n\u2022goodness of \ufb01t : A measure of how well a model \ufb01ts data.\n\u2022coe\ufb03cient of determination: A statistic intended to quantify good-\nness of \ufb01t.\n\u2022sampling weight: A value associated with an observation in a sample\nthat indicates what part of the population it represents."
+    },
+    {
+      "id": 39,
+      "question": "What is the minimum duration of pregnancy selected in the given code?",
+      "ground_truth": "30 weeks",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 160,
+      "source_text": "160 Chapter 11. Regression\nA better option is to recognize this process as a join operation as de\ufb01ned in\nSQL and other relational database languages (see https://en.wikipedia.\norg/wiki/Join_(SQL)). Join is implemented as a DataFrame method, so\nwe can perform the operation like this:\nlive = live[live.prglngth>30]\nresp = chap01soln.ReadFemResp()\nresp.index = resp.caseid\njoin = live.join(resp, on='caseid', rsuffix='_r')\nThe \ufb01rst line selects records for pregnancies longer than 30 weeks, assuming\nth"
+    },
+    {
+      "id": 40,
+      "question": "What is the thesis of this book?",
+      "ground_truth": "Data combined with practical methods can answer questions and guide decisions under uncertainty.",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 1,
+      "source_text": "Chapter 1\nExploratory data analysis\nThe thesis of this book is that data combined with practical methods can\nanswer questions and guide decisions under uncertainty.\nAs an example, I present a case study motivated by a question I heard when\nmy wife and I were expecting our \ufb01rst child: do \ufb01rst babies tend to arrive\nlate?\nIf you Google this question, you will \ufb01nd plenty of discussion. Some people\nclaim it\u2019s true, others say it\u2019s a myth, and some people say it\u2019s the other way\naround: \ufb01rst babies com"
+    },
+    {
+      "id": 41,
+      "question": "What is the data type of the elements in the Series 'pregordr'?",
+      "ground_truth": "int64",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 7,
+      "source_text": "1.5. Variables 7\n...\n13590 3\n13591 4\n13592 5\nName: pregordr, Length: 13593, dtype: int64\nIn this example the indices are integers from 0 to 13592, but in general they\ncan be any sortable type. The elements are also integers, but they can be\nany type.\nThe last line includes the variable name, Series length, and data type; int64\nis one of the types provided by NumPy. If you run this example on a 32-bit\nmachine you might see int32.\nYou can access the elements of a Series using integer indices and s"
+    },
+    {
+      "id": 42,
+      "question": "What is the method to generate predictions for a year after the last observation?",
+      "ground_truth": "Compute inter + slope * dt, where dt is the difference between the time of the prediction and the time of the last observation.",
+      "question_type": "conceptual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 193,
+      "source_text": "12.11. Glossary 193\n2. Compute the EWMA of di\ufb00erences between successive elements in the\ntime series and use the last point as a slope, slope.\n3. To predict values at future times, compute inter + slope * dt,\nwhere dt is the di\ufb00erence between the time of the prediction and the\ntime of the last observation.\nUse this method to generate predictions for a year after the last observation.\nA few hints:\n\u2022Use timeseries.FillMissing to \ufb01ll in missing values before running\nthis analysis. That way the time"
+    },
+    {
+      "id": 43,
+      "question": "What is a raw moment?",
+      "ground_truth": "A kind of statistic",
+      "question_type": "conceptual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 84,
+      "source_text": "84 Chapter 6. Probability density functions\nnp.roll shifts the elements of a to the right, and \u201crolls\u201d the last one back\nto the beginning. We replace the \ufb01rst element of b with 0 and then compute\nthe di\ufb00erence a-b. The result is a NumPy array of probabilities.\nCdf provides Shift and Scale, which modify the values in the Cdf, but the\nprobabilities should be treated as immutable.\n6.7 Moments\nAny time you take a sample and reduce it to a single number, that number is\na statistic. The statistics we "
+    },
+    {
+      "id": 44,
+      "question": "What is the age range of the respondents?",
+      "ground_truth": "14 to 44 years",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 200,
+      "source_text": "200 Chapter 13. Survival analysis\nof respondents\u2019 ages is 14 to 44 years, so the dataset provides a snapshot of\nwomen at di\ufb00erent stages in their lives.\nFor women who have been married, the dataset includes the date of their \ufb01rst\nmarriage and their age at the time. For women who have not been married,\nwe know their age when interviewed, but have no way of knowing when or if\nthey will get married.\nSince we know the age at \ufb01rst marriage for some women, it might be tempt-\ning to exclude the rest an"
+    },
+    {
+      "id": 45,
+      "question": "What is the name of the function used to generate predictions?",
+      "ground_truth": "GeneratePredictions",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 189,
+      "source_text": "12.8. Prediction 189\nEach time through the loop, it generates a \u201cfake\u201d dataset by resampling the\nresiduals and adding them to the \ufb01tted values. Then it runs a linear model\non the fake data and stores the RegressionResults object.\nThe next step is to use the simulated results to generate predictions:\ndef GeneratePredictions(result_seq, years, add_resid=False):\nn = len(years)\nd = dict(Intercept=np.ones(n), years=years, years2=years**2)\npredict_df = pandas.DataFrame(d)\npredict_seq = []\nfor fake_res"
+    },
+    {
+      "id": 46,
+      "question": "What type of data is the variable 'caseid' in the dictionary?",
+      "ground_truth": "a 12-character string",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 5,
+      "source_text": "1.4. DataFrames 5\nThe format of the \ufb01le is documented in 2002FemPreg.dct, which is a Stata\ndictionary \ufb01le. Stata is a statistical software system; a \u201cdictionary\u201d in this\ncontext is a list of variable names, types, and indices that identify where in\neach line to \ufb01nd each variable.\nFor example, here are a few lines from 2002FemPreg.dct:\ninfile dictionary {\n_column(1) str12 caseid %12s \"RESPONDENT ID NUMBER\"\n_column(13) byte pregordr %2f \"PREGNANCY ORDER (NUMBER)\"\n}\nThis dictionary describes two va"
+    },
+    {
+      "id": 47,
+      "question": "What is the title of the figure in the histogram?",
+      "ground_truth": "Histogram of the pound part of birth weight.",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 19,
+      "source_text": "2.3. Plotting histograms 19\n0 2 4 6 8 10 12 14\npounds\n0\n500\n1000\n1500\n2000\n2500\n3000frequency\nbirthwgt_lb\nFigure 2.1: Histogram of the pound part of birth weight.\n2.3 Plotting histograms\nFor this book I wrote a module called thinkplot.py that provides functions\nfor plotting Hists and other objects de\ufb01ned in thinkstats2.py. It is based\non pyplot, which is part of the matplotlib package. See Section 0.2 for\ninformation about installing matplotlib.\nTo plot hist with thinkplot, try this:\n>>> import "
+    },
+    {
+      "id": 48,
+      "question": "What is the definition of correlation?",
+      "ground_truth": "A statistic that measures the strength of the relationship between two variables.",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (1).pdf",
+      "page_number": 104,
+      "source_text": "104 Chapter 7. Relationships between variables\n\u2022saturation: Loss of information when multiple points are plotted on\ntop of each other.\n\u2022correlation: A statistic that measures the strength of the relationship\nbetween two variables.\n\u2022standardize: To transform a set of values so that their mean is 0 and\ntheir variance is 1.\n\u2022standard score : A value that has been standardized so that it is\nexpressed in standard deviations from the mean.\n\u2022covariance: A measure of the tendency of two variables to var"
+    },
+    {
+      "id": 49,
+      "question": "What is the value of \u03b1 for the Pareto distribution in the given scenario?",
+      "ground_truth": "1.7",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": 72,
+      "source_text": "72 Chapter 5. Modeling distributions\nExercise 5.2 To get a feel for the Pareto distribution, let\u2019s see how di\ufb00erent\nthe world would be if the distribution of human height were Pareto. With the\nparameters xm = 1 m and \u03b1 = 1.7, we get a distribution with a reasonable\nminimum, 1 m, and median, 1.5 m.\nPlot this distribution. What is the mean human height in Pareto world?\nWhat fraction of the population is shorter than the mean? If there are 7\nbillion people in Pareto world, how many do we expect to "
+    },
+    {
+      "id": 50,
+      "question": "What is the section number of the 'Accuracy' chapter?",
+      "ground_truth": "11.9",
+      "question_type": "factual",
+      "source_file": "thinkstats2 (2).pdf",
+      "page_number": null,
+      "source_text": ". . . . . . . . . . . . . . . . . . . . . . . . 166\n11.9 Accuracy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 168\n11.10 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 169\n11.11 Glossary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 170"
+    }
+  ]
+}
