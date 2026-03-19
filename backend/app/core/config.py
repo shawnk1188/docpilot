@@ -18,6 +18,19 @@ class Settings(BaseSettings):
     groq_base_url: str = "https://api.groq.com/openai/v1"
     groq_model: str = "llama-3.1-8b-instant"
 
+
+    # ── Phase 2: Hybrid retrieval ─────────────────────────────────────────
+    # fetch_k: how many candidates each retrieval path fetches before fusion
+    # more = better fusion quality, slower BM25 build
+    fetch_k: int = 20
+
+    # ── Phase 2: Re-ranker ────────────────────────────────────────────────
+    # cross-encoder model for re-ranking top candidates
+    # runs locally — no API key needed
+    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+
+    # set to False to disable re-ranking (faster but less accurate)
+    reranker_enabled: bool = True
     # ── Resolved LLM settings ────────────────────────────────────────────────
     # These properties resolve the correct values based on llm_provider
     # Use these everywhere instead of checking the provider manually

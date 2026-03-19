@@ -1,5 +1,3 @@
-# backend/Dockerfile — full file
-
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -7,21 +5,24 @@ WORKDIR /app
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    poppler-utils \
+    curl poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml uv.lock ./
 
 RUN uv sync --frozen --no-dev --no-cache
 
-# Use uv run so it executes inside the .venv where packages are installed
-RUN uv run python -c "from sentence_transformers import SentenceTransformer; \
-               SentenceTransformer('all-MiniLM-L6-v2')"
+# Only pre-bake the embedding model (small, ~80MB)
+# Cross-encoder downloads on first query (~80MB) — acceptable tradeoff
+# when disk space is constrained
+RUN uv run python -c "
+from sentence_transformers import SentenceTransformer
+SentenceTransformer('all-MiniLM-L6-v2')
+print('Embedding model pre-loaded')
+"
 
 COPY app/ ./app/
 
-# Add .venv/bin to PATH so uvicorn and all packages are found at runtime
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1

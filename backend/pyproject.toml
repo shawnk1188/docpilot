@@ -2,33 +2,31 @@
 name = "docpilot-backend"
 version = "0.1.0"
 description = "Production RAG backend — docpilot"
-requires-python = ">=3.12"
+requires-python = "==3.12.*"   
 dependencies = [
     "fastapi==0.115.5",
     "uvicorn[standard]==0.32.1",
     "python-multipart==0.0.12",
-
     # RAG core
     "llama-index==0.11.23",
     "llama-index-embeddings-huggingface==0.3.1",
-
-    # Embedding model — local, no API key needed
+    # Embedding + reranker models — local, no API key needed
     "sentence-transformers==3.3.1",
-
+    # Pin torch to last version with Intel Mac wheels
+    # torch >= 2.3.0 dropped x86_64 macOS support
+    "torch==2.2.2",
+    # Phase 2: hybrid retrieval
+    "rank-bm25==0.2.2",
     # Vector store
     "qdrant-client==1.12.1",
-
     # Document parsing
     "pypdf==5.1.0",
-
     # Settings + validation
     "pydantic==2.10.2",
     "pydantic-settings==2.6.1",
     "python-dotenv==1.0.1",
-
     # HTTP client
     "httpx==0.28.0",
-
     # Observability
     "structlog==24.4.0",
     "prometheus-fastapi-instrumentator==7.0.0",
@@ -46,7 +44,7 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 
 [tool.uv]
-dev-dependencies = [
-    "pytest==8.3.4",
-    "pytest-asyncio==0.24.0",
+environments = [
+    "sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
 ]

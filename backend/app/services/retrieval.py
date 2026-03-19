@@ -14,6 +14,9 @@ from app.core.metrics import (
 from app.models.schemas import QueryResponse, Source
 from app.services.embedder import EmbeddingService
 from app.services.vector_store import VectorStoreService
+from app.services.hybrid_retriever import HybridRetriever
+from app.services.reranker import RerankerService
+from app.services.bm25_index import BM25Index
 
 
 _SYSTEM_PROMPT = """\
@@ -42,9 +45,20 @@ class RetrievalService:
     ) -> None:
         self._store = vector_store
         self._embedder = embedder
+        # Phase 2 components
+        self._bm25 = BM25Index()
+        self._hybrid = HybridRetriever(
+            vector_store=vector_store,
+            embedder=embedder,
+            bm25=self._bm25,
+        )
+        self._reranker = RerankerService()
 
     async def query(self, question: str, top_k: int) -> QueryResponse:
-        """Full RAG query pipeline. Returns answer with citations."""
+        """
+        Full Phase 2 RAG query pipeline:
+          embed → hybrid retrieve (vector + BM25 + RRF) → re-rank → generate
+        """
         start = time.perf_counter()
 
         logger.info(
@@ -55,17 +69,15 @@ class RetrievalService:
             model=settings.llm_model,
         )
 
-        # Step 1 — Embed the question
-        query_vector = self._embedder.embed_query(question)
-
-        # Step 2 — Retrieve top-k chunks
-        results = await self._store.search(
-            query_vector=query_vector,
-            top_k=top_k,
+        # ── Step 1: Hybrid retrieval (vector + BM25 + RRF) ───────────────────
+        # fetch_k candidates per path, fuse, return top top_k*2 for re-ranker
+        candidates = await self._hybrid.retrieve(
+            question=question,
+            top_k=top_k * 2,        # fetch more than needed for re-ranker
+            fetch_k=settings.fetch_k,
         )
 
-        if not results:
-            logger.warning("query_no_results", question=question[:80])
+        if not candidates:
             return QueryResponse(
                 answer="No documents have been ingested yet. "
                        "Please upload a document first.",
@@ -73,7 +85,17 @@ class RetrievalService:
                 model=settings.llm_model,
             )
 
-        # Step 3 — Record retrieval quality metrics
+        # ── Step 2: Re-rank with cross-encoder ───────────────────────────────
+        if settings.reranker_enabled:
+            results = self._reranker.rerank(
+                question=question,
+                candidates=candidates,
+                top_k=top_k,
+            )
+        else:
+            results = candidates[:top_k]
+
+        # ── Step 3: Record metrics ────────────────────────────────────────────
         scores = [r[3] for r in results]
         for score in scores:
             RETRIEVAL_SCORE.observe(score)
@@ -86,13 +108,10 @@ class RetrievalService:
                 top_score=round(scores[0], 3),
             )
 
-        # Step 4 — Build context string
+        # ── Step 4: Generate answer ───────────────────────────────────────────
         context = self._build_context(results)
-
-        # Step 5 — Generate answer
         answer = await self._call_llm(question, context)
 
-        # Step 6 — Record latency
         latency = time.perf_counter() - start
         QUERY_LATENCY.observe(latency)
 
@@ -105,9 +124,9 @@ class RetrievalService:
             mean_score=round(sum(scores) / len(scores), 3),
             latency_ms=round(latency * 1000),
             chunks_used=len(results),
+            reranker=settings.reranker_enabled,
         )
 
-        # Step 7 — Build citations
         sources = [
             Source(
                 text=text[:500] + "..." if len(text) > 500 else text,
@@ -125,7 +144,6 @@ class RetrievalService:
         )
 
     def _build_context(self, results) -> str:
-        """Format retrieved chunks into the prompt context string."""
         parts = []
         for i, (text, source_file, page_num, score) in enumerate(results, 1):
             page_info = f" · page {page_num}" if page_num else ""
@@ -136,45 +154,15 @@ class RetrievalService:
         return "\n\n---\n\n".join(parts)
 
     async def _call_llm(self, question: str, context: str) -> str:
-        """
-        Call the configured LLM provider.
-
-        LEARNING — provider abstraction:
-        Both Ollama (/api/chat) and Groq (/v1/chat/completions) are called
-        here based on settings.llm_provider. The response parsing differs
-        slightly between the two — Groq uses the OpenAI format, Ollama
-        uses its own native format.
-
-        To add a new provider (OpenAI, Together AI, Anthropic via LiteLLM):
-          1. Add its base_url and model to config.py
-          2. Add a branch here for response parsing if needed
-          3. Update .env — no other code changes required
-        """
         if settings.llm_provider == "groq":
             return await self._call_openai_compatible(question, context)
-        else:
-            return await self._call_ollama_native(question, context)
+        return await self._call_ollama_native(question, context)
 
-    async def _call_openai_compatible(
-        self, question: str, context: str
-    ) -> str:
-        """
-        Call any OpenAI-compatible endpoint (Groq, OpenAI, Together AI etc).
-
-        LEARNING — OpenAI-compatible APIs all share the same format:
-          POST /v1/chat/completions
-          { model, messages: [{role, content}], temperature, stream }
-
-        Response: { choices: [{ message: { content: "answer" } }] }
-
-        This means switching from Groq to OpenAI to Together AI is just
-        a base_url + api_key change in .env. Zero code changes.
-        """
+    async def _call_openai_compatible(self, question: str, context: str) -> str:
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {settings.llm_api_key}",
         }
-
         async with httpx.AsyncClient(
             base_url=settings.llm_base_url,
             headers=headers,
@@ -185,14 +173,8 @@ class RetrievalService:
                 json={
                     "model": settings.llm_model,
                     "messages": [
-                        {
-                            "role": "system",
-                            "content": _SYSTEM_PROMPT.format(context=context),
-                        },
-                        {
-                            "role": "user",
-                            "content": question,
-                        },
+                        {"role": "system", "content": _SYSTEM_PROMPT.format(context=context)},
+                        {"role": "user", "content": question},
                     ],
                     "temperature": 0.1,
                     "stream": False,
@@ -201,19 +183,7 @@ class RetrievalService:
             resp.raise_for_status()
             return resp.json()["choices"][0]["message"]["content"]
 
-    async def _call_ollama_native(
-        self, question: str, context: str
-    ) -> str:
-        """
-        Call Ollama using its native /api/chat endpoint.
-
-        LEARNING — Ollama native vs OpenAI-compatible:
-        Ollama also exposes /v1/chat/completions but it requires
-        the [extensions] package. The native /api/chat endpoint
-        works out of the box and is what we use here.
-
-        Response: { message: { role: "assistant", content: "answer" } }
-        """
+    async def _call_ollama_native(self, question: str, context: str) -> str:
         async with httpx.AsyncClient(
             base_url=settings.ollama_base_url,
             timeout=120.0,
@@ -223,19 +193,11 @@ class RetrievalService:
                 json={
                     "model": settings.ollama_model,
                     "messages": [
-                        {
-                            "role": "system",
-                            "content": _SYSTEM_PROMPT.format(context=context),
-                        },
-                        {
-                            "role": "user",
-                            "content": question,
-                        },
+                        {"role": "system", "content": _SYSTEM_PROMPT.format(context=context)},
+                        {"role": "user", "content": question},
                     ],
                     "stream": False,
-                    "options": {
-                        "temperature": 0.1,
-                    },
+                    "options": {"temperature": 0.1},
                 },
             )
             resp.raise_for_status()

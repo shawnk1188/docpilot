@@ -7,6 +7,7 @@ networks:
 volumes:
   qdrant-data:
   ollama-data:
+  huggingface-cache:
 
 services:
 
@@ -46,6 +47,7 @@ services:
       - "8000:8000"
     volumes:
       - ./docs:/app/docs
+      - huggingface-cache:/root/.cache/huggingface
     networks:
       - docpilot-net
     depends_on:
@@ -85,6 +87,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=docpilot
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/docpilot.json
     volumes:
       - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
