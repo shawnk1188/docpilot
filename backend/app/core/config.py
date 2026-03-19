@@ -74,6 +74,12 @@ class Settings(BaseSettings):
     # ── Retrieval ─────────────────────────────────────────────────────────────
     retrieval_top_k: int = 5
 
+
+    # ── Phase 2: Hybrid retrieval ─────────────────────────────────────
+    fetch_k: int = 20
+    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    reranker_enabled: bool = True
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 

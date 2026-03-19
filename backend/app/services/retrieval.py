@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 import time
 from typing import List
@@ -7,16 +8,14 @@ import httpx
 from app.core.config import settings
 from app.core.logging import logger
 from app.core.metrics import (
-    QUERY_LATENCY,
-    RETRIEVAL_SCORE,
-    LOW_CONFIDENCE_QUERIES,
+    QUERY_LATENCY, RETRIEVAL_SCORE, LOW_CONFIDENCE_QUERIES,
 )
 from app.models.schemas import QueryResponse, Source
+from app.services.bm25_index import BM25Index
 from app.services.embedder import EmbeddingService
-from app.services.vector_store import VectorStoreService
 from app.services.hybrid_retriever import HybridRetriever
 from app.services.reranker import RerankerService
-from app.services.bm25_index import BM25Index
+from app.services.vector_store import VectorStoreService
 
 
 _SYSTEM_PROMPT = """\
@@ -43,11 +42,10 @@ class RetrievalService:
         vector_store: VectorStoreService,
         embedder: EmbeddingService,
     ) -> None:
-        self._store = vector_store
+        self._store    = vector_store
         self._embedder = embedder
-        # Phase 2 components
-        self._bm25 = BM25Index()
-        self._hybrid = HybridRetriever(
+        self._bm25     = BM25Index()
+        self._hybrid   = HybridRetriever(
             vector_store=vector_store,
             embedder=embedder,
             bm25=self._bm25,
@@ -55,10 +53,7 @@ class RetrievalService:
         self._reranker = RerankerService()
 
     async def query(self, question: str, top_k: int) -> QueryResponse:
-        """
-        Full Phase 2 RAG query pipeline:
-          embed → hybrid retrieve (vector + BM25 + RRF) → re-rank → generate
-        """
+        """Phase 2 RAG: hybrid retrieve → rerank → generate → cite."""
         start = time.perf_counter()
 
         logger.info(
@@ -69,11 +64,10 @@ class RetrievalService:
             model=settings.llm_model,
         )
 
-        # ── Step 1: Hybrid retrieval (vector + BM25 + RRF) ───────────────────
-        # fetch_k candidates per path, fuse, return top top_k*2 for re-ranker
+        # Step 1 — Hybrid retrieval (vector + BM25 + RRF)
         candidates = await self._hybrid.retrieve(
             question=question,
-            top_k=top_k * 2,        # fetch more than needed for re-ranker
+            top_k=top_k * 2,
             fetch_k=settings.fetch_k,
         )
 
@@ -85,7 +79,7 @@ class RetrievalService:
                 model=settings.llm_model,
             )
 
-        # ── Step 2: Re-rank with cross-encoder ───────────────────────────────
+        # Step 2 — Re-rank with cross-encoder
         if settings.reranker_enabled:
             results = self._reranker.rerank(
                 question=question,
@@ -95,7 +89,7 @@ class RetrievalService:
         else:
             results = candidates[:top_k]
 
-        # ── Step 3: Record metrics ────────────────────────────────────────────
+        # Step 3 — Record metrics
         scores = [r[3] for r in results]
         for score in scores:
             RETRIEVAL_SCORE.observe(score)
@@ -108,9 +102,9 @@ class RetrievalService:
                 top_score=round(scores[0], 3),
             )
 
-        # ── Step 4: Generate answer ───────────────────────────────────────────
+        # Step 4 — Generate answer
         context = self._build_context(results)
-        answer = await self._call_llm(question, context)
+        answer  = await self._call_llm(question, context)
 
         latency = time.perf_counter() - start
         QUERY_LATENCY.observe(latency)
@@ -173,7 +167,8 @@ class RetrievalService:
                 json={
                     "model": settings.llm_model,
                     "messages": [
-                        {"role": "system", "content": _SYSTEM_PROMPT.format(context=context)},
+                        {"role": "system",
+                         "content": _SYSTEM_PROMPT.format(context=context)},
                         {"role": "user", "content": question},
                     ],
                     "temperature": 0.1,
@@ -193,7 +188,8 @@ class RetrievalService:
                 json={
                     "model": settings.ollama_model,
                     "messages": [
-                        {"role": "system", "content": _SYSTEM_PROMPT.format(context=context)},
+                        {"role": "system",
+                         "content": _SYSTEM_PROMPT.format(context=context)},
                         {"role": "user", "content": question},
                     ],
                     "stream": False,
