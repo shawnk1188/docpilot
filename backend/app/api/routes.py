@@ -29,8 +29,8 @@ ALLOWED = {".pdf", ".txt", ".md", ".docx"}
 async def ingest(
     file: UploadFile = File(...),
     svc: IngestionService = Depends(get_ingestion_service),
+    store: VectorStoreService = Depends(get_vector_store),
 ):
-    """Upload and ingest a document into the vector store."""
     ext = Path(file.filename).suffix.lower()
     if ext not in ALLOWED:
         raise HTTPException(
@@ -38,25 +38,25 @@ async def ingest(
             detail=f"Unsupported type '{ext}'. Allowed: {ALLOWED}",
         )
 
-    # FIX from step 1b: preserve original filename in the temp file
-    # so citations show the real name, not tmpmcvlww22.pdf
-    original_name = Path(file.filename).stem   # e.g. "my_manual"
-    with tempfile.NamedTemporaryFile(
-        delete=False,
-        prefix=f"{original_name}_",
-        suffix=ext,
-    ) as tmp:
-        shutil.copyfileobj(file.file, tmp)
-        tmp_path = tmp.name
+    # Ensure collection exists before ingesting
+    # Handles the case where it was manually deleted via Qdrant API
+    await store.ensure_collection()
+
+    tmp_dir = tempfile.mkdtemp()
+    tmp_path = os.path.join(tmp_dir, file.filename)
 
     try:
+        with open(tmp_path, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+
         count, source = await svc.ingest_file(tmp_path)
+
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc))
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
     finally:
-        os.unlink(tmp_path)
+        shutil.rmtree(tmp_dir, ignore_errors=True)
 
     return IngestResponse(
         message=f"Ingested '{source}' successfully",
@@ -102,3 +102,11 @@ async def stats(store: VectorStoreService = Depends(get_vector_store)):
         chunk_size=settings.chunk_size,
         chunk_overlap=settings.chunk_overlap,
     )
+
+@router.delete("/clear", status_code=status.HTTP_204_NO_CONTENT)
+async def clear_collection(
+    store: VectorStoreService = Depends(get_vector_store)
+):
+    """Delete and recreate the collection — removes all ingested documents."""
+    await store._client.delete_collection(settings.qdrant_collection)
+    await store.ensure_collection()

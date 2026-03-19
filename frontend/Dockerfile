@@ -14,7 +14,8 @@ RUN uv sync --frozen --no-dev --no-cache
 # Copy app last
 COPY app.py .
 
-ENV PYTHONUNBUFFERED=1 \
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
 EXPOSE 8501
